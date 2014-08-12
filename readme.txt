@@ -40,42 +40,12 @@ Yes. Use the shortcode option 'max_recur', as in [ctc-fullcalendar max_recur='5'
 
 = Can you add a daily recurrence feature to the plugin? =
 
-CTC Full Calendar only handles the full calendar display, not the backend related to the events and their recurrence. To request features related to the event functionality in the CTC plugin, go to the [support](http://wordpress.org/support/church-theme-content/) page for the CTC Plugin. 
-
-Here is one way to add daily recurrence to the CTC plugin. Note that this feature is unsupported by the CTC plugin and will break with future updates. This requires editing files in the CTC plugin directory. 
-
-Add the following line to wp-content\plugins\church-theme-content\includes\admin\event-fields.php. In the ctc_add_meta_box_event_date() function, edit the $meta_box 'fields' array as follows. Under '_ctc_event_recurrence', in the 'options', add the following element in the array, after 'none'
- 'daily'	=> _x( 'Daily', 'event meta box', 'church-theme-content' ),
-
+CTC Full Calendar only handles the full calendar display, not the backend related to the events and their recurrence. To request features related to the event functionality in the CTC plugin, go to the [support](http://wordpress.org/support/church-theme-content/) page for the CTC Plugin. I have created a fork of the CTC plugin which adds this feature and which CTC Full Calendar supports. You can find it on [GitHub](http://github.com/serranoabq/church-theme-content/develop). Note that this is an unsupported fork. Steven Gliebe and ChurchThemes.Net are not associated with this version.
 
 = Can you add Nth day/week/month/year recurrence to the plugin? =
 
-CTC Full Calendar only handles the full calendar display, not the backend related to the events and their recurrence. To request features related to the event functionality in the CTC plugin, go to the [support](http://wordpress.org/support/church-theme-content/) page for the CTC Plugin. 
+CTC Full Calendar only handles the full calendar display, not the backend related to the events and their recurrence. To request features related to the event functionality in the CTC plugin, go to the [support](http://wordpress.org/support/church-theme-content/) page for the CTC Plugin. I have created a fork of the CTC plugin which adds this feature. You can find it on [GitHub](http://github.com/serranoabq/church-theme-content/develop). Note that this is an unsupported fork. Steven Gliebe and ChurchThemes.Net are not associated with this version.
 
-Here is one way to add recurrence period (equivalent to Nth day/week/month/year recurrence) to the CTC plugin. Note that this feature is unsupported by the CTC plugin and will break with future updates. This requires editing files in the CTC plugin directory. 
-
-In 
-// Recurence Period
-'_ctc_event_recurrence_period' => array(
-	'name'				=> __( 'Recurrence Period', 'church-theme-content' ),
-	'after_name'		=> '',
-	'desc'				=> _x( "Period of recurrence. It works with the Recurrence field to allow every N type recurrence. For example, choosing 'weekly' and seting this field to '2' makes the recurrence biweekly.", 'event meta box', 'church-theme-content' ),
-	'type'				=> 'number', // text, textarea, checkbox, radio, select, number, upload, upload_textarea, url
-	'checkbox_label'	=> '', //show text after checkbox
-	'options'			=> array(), // array of keys/values for radio or select
-	'upload_button'		=> '', // text for button that opens media frame
-	'upload_title'		=> '', // title appearing at top of media frame
-	'upload_type'		=> '', // optional type of media to filter by (image, audio, video, application/pdf)
-	'default'			=> '1', // value to pre-populate option with (before first save or on reset)
-	'no_empty'			=> true, // if user empties value, force default to be saved instead
-	'allow_html'		=> false, // allow HTML to be used in the value (text, textarea)
-	'attributes'		=> array(), // attr => value array (e.g. set min/max for number type)
-	'class'				=> '', // class(es) to add to input (try try ctmb-medium, ctmb-small, ctmb-tiny)
-	'field_attributes'	=> array(), // attr => value array for field container
-	'field_class'		=> '', // class(es) to add to field container
-	'custom_sanitize'	=> '', // function to do additional sanitization
-	'custom_field'		=> '', // function for custom display of field input
-),
 = Can I use this plugin with any theme? =
 
 Yes, the calendar display works even without a CTC-compatible theme. However, without a compatible theme, the event page, accessible by clicking on the event title on the calendar will not display all of the rich event information, such as date, time, venue, etc., that is available with the CTC Plugin. To create a compatible theme, please see the [CTC Developer Guide](http://churchthemes.com/guides/developer/church-theme-content/).
@@ -88,5 +58,6 @@ Yes, the calendar display works even without a CTC-compatible theme. However, wi
 0.1 - Initial version
 0.2 - Initial shortcode blocks
 0.3 - Added daily recurrence, with changes to CTC
-0.4 - Added nth - day recurrence, with changes to CTC
-0.9 - BETA. Added filter to ctc_move_date_forward and add daily recurrence scheduling
+0.4 - Added every n recurrence, with changes to CTC
+0.9 - BETA. Added filter to ctc_move_date_forward and add daily recurrence scheduling. Added to GitHub
+0.9.1 - BETA. Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
