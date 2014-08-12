@@ -2,7 +2,7 @@
 /**
 * Plugin Name: CTC Full Calendar 
 * Description: Apply a full calendar view for Church Theme Content Events. Use the shortcode [ctc_fullcalendar] in any post to display a full calendar of events.
-* Version: 0.9
+* Version: 0.5.1
 */
 
 // No direct access
@@ -171,10 +171,14 @@ function ctcfc_fullcalendar_shortcode($attr){
 					// Get the new date based on the interval
 					$newdate = date_add( new DateTime($startdate), $interval );
 					
+					// Date addition by month can mess things up sometimes, so fix it
 					if($recurrence == 'monthly' AND date_format(new DateTime($startdate), 'd') != date_format($newdate , 'd') ) {
-						// Check for a missing day (e.g., 29, 30 or 31). This primarily happens with monthly recurrence, which 
-						// moves the next date into one month past (e.g., May 31, July 1, skipping June)
-						// The solution is to shift the new date back 10 days, and get the last day of the month
+						// Check for a missing day (e.g., 29, 30 or 31). 
+						// This primarily happens with monthly recurrence, which moves the 
+						// next date into one month past (e.g., May 31 + 1 month = Jul 1, 
+						// b/c June doesn't have day 31)
+						// Solution: Shift the new date back 10 days to get in the right month, 
+						// and then get the last day of the month
 						$recurdate = date_format(date_sub( $newdate, date_interval_create_from_date_string('10 days') ), 'Y-m-t');
 						$dateshift = date_diff($newdate, new DateTime($recurdate));						
 					} else 
@@ -190,6 +194,7 @@ function ctcfc_fullcalendar_shortcode($attr){
 					if ($end != ''){
 						$recurenddate = date_format(date_add( new DateTime($enddate), $interval), 'Y-m-d');
 						
+						// Same date fix applies in the end date
 						if($recurrence == 'monthly' AND date_format(new DateTime($startdate), 'd') != date_format($newdate , 'd') ) 
 							$recurenddate = date_format(date_add( new DateTime($recurenddate), $dateshift),'Y-m-d');
 						
@@ -220,78 +225,5 @@ function ctcfc_fullcalendar_shortcode($attr){
 	
 	return $before . $result . $after;	
 }
-
-
-/**
- * Move date forward
- *
- * Move date forward by a day week, month or year until it is not in past (in case wp cron misses a beat).
- *
- * @since 0.9
- * @param string $date Date to move into the future
- * @param string $increment 'daily', 'weekly', 'monthly' or 'yearly'
- * @return string Future date
- */
-function ctcfc_increment_future_date( $date, $increment ) {
-
-	// In case no change could be made
-	$new_date = $date;
-
-	// Get month, day and year, increment if date is valid
-	list( $y, $m, $d ) = explode( '-', $date );
-	if ( checkdate( $m, $d, $y ) ) {
-
-		// Increment
-		switch ( $increment ) {
-
-			// Daily
-			case 'daily' :
-				// Add 1 day
-				list( $y, $m, $d ) = explode( '-', date( 'Y-m-d', strtotime( $date ) + DAY_IN_SECONDS ) );
-				break;
-			// Weekly
-			case 'weekly' :
-				// Add 7 days
-				list( $y, $m, $d ) = explode( '-', date( 'Y-m-d', strtotime( $date ) + WEEK_IN_SECONDS ) );
-				break;
-			// Monthly
-			case 'monthly' :
-				// Move forward one month
-				if ( $m < 12 ) { // same year
-					$m++; // add one month
-				} else { // next year (old month is December)
-					$m = 1; // first month of year
-					$y++; // add one year
-				}	
-				break;
-			// Yearly
-			case 'yearly' :
-				// Move forward one year
-				$y++;
-				break;
-		}
-
-		// Day does not exist in month
-		// Example: Make "November 31" into 30 or "February 29" into 28 (for non-leap year)
-		$days_in_month = date( 't', mktime( 0, 0, 0, $m, 1, $y ) );
-		if ( $d > $days_in_month ) {
-			$d = $days_in_month;
-		}
-
-		// Form the date string
-		$new_date = date( 'Y-m-d', mktime( 0, 0, 0, $m, $d, $y ) ); // pad day, month with 0
-
-		// Is new date in past? Increment until it is not (automatic correction in case wp-cron misses a beat)
-		$today_ts = strtotime( date_i18n( 'Y-m-d' ) ); // localized
-		$new_date_ts = strtotime( $new_date );
-		while ( $new_date_ts < $today_ts ) {
-			$new_date = ctcfc_increment_future_date( $new_date, $increment );
-			$new_date_ts = strtotime( $new_date );
-		}
-
-	}
-
-}
-add_filter('ctc_move_date_forward',ctcfc_increment_future_date,10,2);
 
 ?>
