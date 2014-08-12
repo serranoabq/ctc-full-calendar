@@ -2,7 +2,7 @@
 /**
 * Plugin Name: CTC Full Calendar 
 * Description: Apply a full calendar view for Church Theme Content Events. Use the shortcode [ctc_fullcalendar] in any post to display a full calendar of events.
-* Version: 0.5.1
+* Version: 0.9.1
 */
 
 // No direct access
