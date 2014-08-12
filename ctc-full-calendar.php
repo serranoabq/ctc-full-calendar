@@ -2,7 +2,7 @@
 /**
 * Plugin Name: CTC Full Calendar 
 * Description: Apply a full calendar view for Church Theme Content Events. Use the shortcode [ctc_fullcalendar] in any post to display a full calendar of events.
-* Version: 0.9.1
+* Version: 0.9.2
 */
 
 // No direct access
@@ -95,11 +95,12 @@ function ctcfc_fullcalendar_shortcode($attr){
 		$events = array();
 		while ($posts->have_posts()) :
 			$posts->the_post();
+			$post_id = get_the_ID();
 			
 			// Get event information
-			$startdate = get_post_meta( get_the_ID(), '_ctc_event_start_date', true );
-			$enddate   = get_post_meta( get_the_ID(), '_ctc_event_end_date', true );
-			$time  = get_post_meta( get_the_ID(), '_ctc_event_time', true );
+			$startdate = get_post_meta( $post_id, '_ctc_event_start_date', true );
+			$enddate   = get_post_meta( $post_id, '_ctc_event_end_date', true );
+			$time  = get_post_meta( $post_id, '_ctc_event_time', true );
 			
 			// Fix things a bit
 			$enddate   = $enddate =='' ? $startdate : $enddate;
@@ -128,7 +129,7 @@ function ctcfc_fullcalendar_shortcode($attr){
 			
 			// append to event array	
 			$events[] = array(
-				'id' 		=> get_the_ID(),
+				'id' 		=> $post_id,
 				'title' => get_the_title(),
 				'allDay' => $allday,
 				'start' => $start,
@@ -138,11 +139,11 @@ function ctcfc_fullcalendar_shortcode($attr){
 			
 			// CTC only has a single event and recurrence is updated as the event lapses.
 			// Therefore recurrence must be processed in code to display properly
-			$recurrence 		  = get_post_meta( get_the_ID(), '_ctc_event_recurrence', true );
-			$recurrence_end 	= get_post_meta( get_the_ID(), '_ctc_event_recurrence_end_date', true );
+			$recurrence 		  = get_post_meta( $post_id, '_ctc_event_recurrence', true );
+			$recurrence_end 	= get_post_meta( $post_id, '_ctc_event_recurrence_end_date', true );
 			
 			// Recurrence period is not part of the CTC plugin (see readme.txt for instructions on how to add it)
-			$recurrence_period 	= get_post_meta( get_the_ID(), '_ctc_event_recurrence_period', true );
+			$recurrence_period 	= get_post_meta( $post_id, '_ctc_event_recurrence_period', true );
 			
 			// Display recurrences
 			if ($recurrence != 'none') {
@@ -152,7 +153,7 @@ function ctcfc_fullcalendar_shortcode($attr){
 						
 						// Daily is not a default option in the CTC plugin (see readme.txt for instructions on how to add it)
 						case 'daily':
-							$interval = date_interval_create_from_date_string($i . ' days');
+							$interval = date_interval_create_from_date_string($n * $i . ' days');
 							break;
 						case 'weekly':
 							// same day of the week (eg, Sun-Sat)
@@ -203,7 +204,7 @@ function ctcfc_fullcalendar_shortcode($attr){
 					
 					// append to event array
 					$events[] = array(
-						'id' 		=> get_the_ID(),
+						'id' 		=> $post_id,
 						'title' => get_the_title(),
 						'allDay' => $allday,
 						'start' => $start,
