@@ -59,5 +59,6 @@ Yes, the calendar display works even without a CTC-compatible theme. However, wi
 0.2 - Initial shortcode blocks
 0.3 - Added daily recurrence, with changes to CTC
 0.4 - Added every n recurrence, with changes to CTC
-0.9 - BETA. Added filter to ctc_move_date_forward and add daily recurrence scheduling. Added to GitHub
-0.9.1 - BETA. Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
+0.9 - Added filter to ctc_move_date_forward and add daily recurrence scheduling. Added to GitHub
+0.9.1 - Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
+0.9.2 - Made calendar code compatible with PHP 5.2 (previous version required PHP 5.3)
