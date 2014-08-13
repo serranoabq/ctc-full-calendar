@@ -94,47 +94,49 @@ function ctcfc_fullcalendar_shortcode($attr){
 	if ($posts->have_posts()){
 		$events = array();
 		while ($posts->have_posts()) :
-			$posts->the_post();
-			$post_id = get_the_ID();
+			$posts		-> the_post();
+			$post_id 	= get_the_ID();
+			$title 		= get_the_title();
+			$url 			= get_permalink();
 			
 			// Get event information
-			$startdate = get_post_meta( $post_id, '_ctc_event_start_date', true );
-			$enddate   = get_post_meta( $post_id, '_ctc_event_end_date', true );
-			$time  = get_post_meta( $post_id, '_ctc_event_time', true );
+			$startdate 	= get_post_meta( $post_id, '_ctc_event_start_date', true );
+			$enddate   	= get_post_meta( $post_id, '_ctc_event_end_date', true );
+			$time  			= get_post_meta( $post_id, '_ctc_event_time', true );
 			
 			// Fix things a bit
-			$enddate   = $enddate =='' ? $startdate : $enddate;
-			$time  = str_replace(' ','',$time);
+			$enddate   	= $enddate =='' ? $startdate : $enddate;
+			$time  			= str_replace(' ','',$time);
 			// nominal time validation
 			$hastime = preg_match("/(\d|[0-1]\d|2[0-3]):([0-5]\d)(am|pm|AM|PM)*(-(\d|[0-1]\d|2[0-3]):([0-5]\d)(am|pm|AM|PM)*)?/i", $time);
 			$time = $hastime ? $time : '';
 			
-			$start = $startdate;
-			$end   = $enddate;
+			$start  = $startdate;
+			$end    = $enddate;
 			$allday = false;
 			
 			$times = explode('-',$time);
 			
-			$starttime = 'T';
-			$endtime = 'T';
+			$starttime 	= '';
+			$endtime 		= '';
 			if( count($times) > 0 )
-				$starttime .=  date('H:i:s',strtotime($times[0]));
+				$starttime .=  'T' . date('H:i:s',strtotime($times[0]));
 			if( count($times) > 1 ) 
-				$endtime .= date('H:i:s',strtotime($times[1]));
+				$endtime .= 'T' . date('H:i:s',strtotime($times[1]));
 			
 			// Check for all day events: no start time, or different start/end dates and no end time
 			$allday = ($starttime == 'T') OR ($start != $end AND $endtime == 'T');
 			$start .= $allday ? '' : $starttime;
-			$end   .= $endtime == 'T' ? '' : $endtime;
-			
+			$end   .= $endtime;
+
 			// append to event array	
 			$events[] = array(
-				'id' 		=> $post_id,
-				'title' => get_the_title(),
+				'id' 		 => $post_id,
+				'title'  => $title,
 				'allDay' => $allday,
-				'start' => $start,
-				'end' 	=> $end,
-				'url'   => get_permalink()
+				'start'  => $start,
+				'end' 	 => $end,
+				'url'    => $url
 			);
 			
 			// CTC only has a single event and recurrence is updated as the event lapses.
@@ -142,50 +144,48 @@ function ctcfc_fullcalendar_shortcode($attr){
 			$recurrence 		  = get_post_meta( $post_id, '_ctc_event_recurrence', true );
 			$recurrence_end 	= get_post_meta( $post_id, '_ctc_event_recurrence_end_date', true );
 			
-			// Recurrence period is not part of the CTC plugin (see readme.txt for instructions on how to add it)
+			// NOTE: Recurrence period is not part of the CTC plugin
 			$recurrence_period 	= get_post_meta( $post_id, '_ctc_event_recurrence_period', true );
 			
 			// Display recurrences
 			if ($recurrence != 'none') {
 				$n = $recurrence_period != '' ? (int) $recurrence_period : 1;
 				for ($i=1 ; $i<=$max_recur ; $i++) {
+					list( $y, $m, $d ) = explode( '-', $startdate );
 					switch ($recurrence) {
-						
-						// Daily is not a default option in the CTC plugin (see readme.txt for instructions on how to add it)
+						// NOTE: Daily is not an option in the CTC plugin 
 						case 'daily':
-							$interval = date_interval_create_from_date_string($n * $i . ' days');
+							list( $y, $m, $d ) = explode( '-', date( 'Y-m-d', strtotime( $startdate ) + $i * $n * DAY_IN_SECONDS ) );
 							break;
 						case 'weekly':
 							// same day of the week (eg, Sun-Sat)
-							$interval = date_interval_create_from_date_string($n * $i. ' weeks');
+							list( $y, $m, $d ) = explode( '-', date( 'Y-m-d', strtotime( $startdate ) + $i * $n * WEEK_IN_SECONDS ) );
 							break;
 						case 'monthly':
 							// same day of the month (eg., the 13th)
-							$interval = date_interval_create_from_date_string($n * $i . ' months');
+							$m += $i * $n;							
+							$ny = floor(($m-1)/12);
+							$m -= 12*$ny;
+							$y += $ny;
 							break;
 						case 'yearly':
 							// same day of the year (eg., the 27th of October)
-							$interval = date_interval_create_from_date_string($n * $i . ' years');
+							$y+=$i * $n;
 							break;
 					}
 					
 					// Get the new date based on the interval
-					$newdate = date_add( new DateTime($startdate), $interval );
+					$t = date( 't', mktime( 0, 0, 0, $m, 1, $y )) ;
+					if($d > $t) {
+						$recurdate = date('Y-m-t', mktime( 0, 0, 0, $m, 1, $y ));
+					} else {
+						$recurdate = date('Y-m-d', mktime( 0, 0, 0, $m, $d, $y ));
+					}
 					
-					// Date addition by month can mess things up sometimes, so fix it
-					if($recurrence == 'monthly' AND date_format(new DateTime($startdate), 'd') != date_format($newdate , 'd') ) {
-						// Check for a missing day (e.g., 29, 30 or 31). 
-						// This primarily happens with monthly recurrence, which moves the 
-						// next date into one month past (e.g., May 31 + 1 month = Jul 1, 
-						// b/c June doesn't have day 31)
-						// Solution: Shift the new date back 10 days to get in the right month, 
-						// and then get the last day of the month
-						$recurdate = date_format(date_sub( $newdate, date_interval_create_from_date_string('10 days') ), 'Y-m-t');
-						$dateshift = date_diff($newdate, new DateTime($recurdate));						
-					} else 
-						$recurdate = date_format(date_add( new DateTime($startdate), $interval), 'Y-m-d');
+					// Figure out the shift needed to apply to the end date & time
+					$dateshift = strtotime($recurdate)-strtotime($startdate);
 					
-					// create new date based on previous one
+					// Create next event date & time
 					$start     = $recurdate . $starttime;
 					
 					// stop if new date is past the recurrence end date
@@ -193,23 +193,18 @@ function ctcfc_fullcalendar_shortcode($attr){
 					
 					// shift end dates as well
 					if ($end != ''){
-						$recurenddate = date_format(date_add( new DateTime($enddate), $interval), 'Y-m-d');
-						
-						// Same date fix applies in the end date
-						if($recurrence == 'monthly' AND date_format(new DateTime($startdate), 'd') != date_format($newdate , 'd') ) 
-							$recurenddate = date_format(date_add( new DateTime($recurenddate), $dateshift),'Y-m-d');
-						
+						$recurenddate = date('Y-m-d', strtotime($enddate) + $dateshift);
 						$end 		= $recurenddate . $endtime;
 					}
 					
 					// append to event array
 					$events[] = array(
 						'id' 		=> $post_id,
-						'title' => get_the_title(),
+						'title' => $title,
 						'allDay' => $allday,
 						'start' => $start,
 						'end' 	=> $end,
-						'url'   => get_permalink()
+						'url'   => $url
 					);
 				}
 			}
@@ -226,5 +221,4 @@ function ctcfc_fullcalendar_shortcode($attr){
 	
 	return $before . $result . $after;	
 }
-
 ?>
