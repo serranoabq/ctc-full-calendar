@@ -2,7 +2,7 @@
 /**
 * Plugin Name: CTC Full Calendar 
 * Description: Apply a full calendar view for Church Theme Content Events. Use the shortcode [ctc_fullcalendar] in any post to display a full calendar of events.
-* Version: 0.9.2
+* Version: 0.9.3
 */
 
 // No direct access
@@ -100,13 +100,18 @@ function ctcfc_fullcalendar_shortcode($attr){
 			$url 			= get_permalink();
 			
 			// Get event information
+			$origindate 	= get_post_meta( $post_id, '_ctc_event_origin_date', true );
 			$startdate 	= get_post_meta( $post_id, '_ctc_event_start_date', true );
+			$origindate = empty( $origindate ) ? $startdate : $origindate;
 			$enddate   	= get_post_meta( $post_id, '_ctc_event_end_date', true );
 			$time  			= get_post_meta( $post_id, '_ctc_event_time', true );
 			
 			// Fix things a bit
 			$enddate   	= $enddate =='' ? $startdate : $enddate;
 			$time  			= str_replace(' ','',$time);
+			
+			$eventlen = strtotime($enddate) - strtotime($startdate);
+			
 			// nominal time validation
 			$hastime = preg_match("/(\d|[0-1]\d|2[0-3]):([0-5]\d)(am|pm|AM|PM)*(-(\d|[0-1]\d|2[0-3]):([0-5]\d)(am|pm|AM|PM)*)?/i", $time);
 			$time = $hastime ? $time : '';
@@ -152,6 +157,7 @@ function ctcfc_fullcalendar_shortcode($attr){
 				$n = $recurrence_period != '' ? (int) $recurrence_period : 1;
 				for ($i=1 ; $i<=$max_recur ; $i++) {
 					list( $y, $m, $d ) = explode( '-', $startdate );
+					list( $oy, $om, $od) = explode( '-', $origindate );
 					switch ($recurrence) {
 						// NOTE: Daily is not an option in the CTC plugin 
 						case 'daily':
@@ -167,11 +173,19 @@ function ctcfc_fullcalendar_shortcode($attr){
 							$ny = floor(($m-1)/12);
 							$m -= 12*$ny;
 							$y += $ny;
+							// Fix: the event start day might have been shifted, so go by the 
+							// original start date. Note that this will affect end date as that 
+							// is relative to the original 
+							$d = $d != $od ? $od: $d;
 							break;
 						case 'yearly':
 							// same day of the year (eg., the 27th of October)
 							$y+=$i * $n;
 							break;
+					}
+					
+					if ( 'monthly' == $recurrence && $d != $od ) {
+						$d = $od;
 					}
 					
 					// Get the new date based on the interval
@@ -193,7 +207,7 @@ function ctcfc_fullcalendar_shortcode($attr){
 					
 					// shift end dates as well
 					if ($end != ''){
-						$recurenddate = date('Y-m-d', strtotime($enddate) + $dateshift);
+						$recurenddate = date('Y-m-d', strtotime($startdate) + $eventlen + $dateshift);
 						$end 		= $recurenddate . $endtime;
 					}
 					
