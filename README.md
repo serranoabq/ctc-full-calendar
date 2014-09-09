@@ -50,18 +50,18 @@ Syntax: `[ctc-fullcalendar max_recur='10']`
 Notes
 -----
 
-CTC Full Calendar only handles the full calendar display, not the backend related to the events and their recurrence. To request features related to the event functionality in the CTC plugin, go to the [support](http://wordpress.org/support/church-theme-content/) page for the CTC Plugin.
+CTC Full Calendar only handles the full calendar display, not the backend related to the events and their recurrence. To request features related to the event functionality in the CTC plugin, go to the [support](http://wordpress.org/plugin/support/church-theme-content/) page for the CTC Plugin.
 
 I have created a fork of the CTC plugin which adds additional recurrance features, such as daily recurrence and Nth day/week/month/year recurrence to the CTC Plugin. You can find it on [GitHub](http://github.com/serranoabq/church-theme-content/develop). Note that this is an unsupported fork. Steven Gliebe and ChurchThemes.com are not associated with this fork.
 
 Changelog
 ---------
 
-0.1 - Initial version
-0.2 - Initial shortcode blocks
-0.3 - Added daily recurrence, with changes to CTC
-0.4 - Added every n recurrence, with changes to CTC
-0.9 - Added filter to ctc_move_date_forward and add daily recurrence scheduling. Added to GitHub
-0.9.1 - Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
-0.9.2 - Made calendar code compatible with PHP 5.2 (previous version required PHP 5.3)
-0.9.3 - Fix previous shift in day
+* 0.1 - Initial version
+* 0.2 - Initial shortcode blocks
+* 0.3 - Added daily recurrence, with changes to CTC
+* 0.4 - Added every n recurrence, with changes to CTC
+* 0.9 - Added filter to ctc_move_date_forward and add daily recurrence scheduling. Added to GitHub
+* 0.9.1 - Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
+* 0.9.2 - Made calendar code compatible with PHP 5.2 (previous version required PHP 5.3)
+* 0.9.3 - Fix previous shift in day
