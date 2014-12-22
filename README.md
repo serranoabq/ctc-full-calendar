@@ -33,7 +33,7 @@ Syntax: `[ctc-fullcalendar view='{_responsive_ | month | week | basicWeek | agen
 The responsive view uses a basicDay view at small viewports, a basicWeek view at intermediate viewports, and a month display for larger ones. 
 
 ### Responsive behavior ###
-When the `view` option is left out or set to `responsive`, the calendar view adjusts to the container viewport. To adjust the location of the responsive breaks, use the `breaks` option. This is a comma=separated list of numbers with the widths at which the view changes must be made. The first value specifies the change from `month` view to `basicWeek` view; the second one gives the width for changing from `basicWeek` to `basicDay`. The default breakpoints are 450 and 300.
+When the `view` option is left out or set to `responsive`, the calendar view adjusts to the container viewport. To adjust the location of the responsive breaks, use the `breaks` option. This is a comma-separated list of numbers with the widths at which the view changes must be made. The first value specifies the change from `month` view to `basicWeek` view; the second one gives the width for changing from `basicWeek` to `basicDay`. The default breakpoints are 450 and 300, respectively.
 
 Syntax: `[ctc-fullcalendar breaks='{med_viewport},{small_viewport}']`
 
@@ -65,3 +65,4 @@ Changelog
 * 0.9.1 - Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
 * 0.9.2 - Made calendar code compatible with PHP 5.2 (previous version required PHP 5.3)
 * 0.9.3 - Fix previous shift in day
+* 1.0 - Changed to a class object. 
