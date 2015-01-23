@@ -12,5 +12,5 @@ if ( !defined( 'ABSPATH' ) ) exit;
 require_once( sprintf( "%s/ctc-full-calendar-class.php", dirname(__FILE__) ) );
 
 if( class_exists( 'CTC_FullCalendar' ) ) {
-	new CTC_FullCalendar();
+	$CTCFC = new CTC_FullCalendar();
 }

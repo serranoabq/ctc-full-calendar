@@ -1,3 +1,108 @@
+/***
+	CTC Fullcalendar 
+**/
 #ctc-fullcalendar .fc-header, #ctc-fullcalendar .fc-header   *{
 	border: 0px;
+}
+
+
+/* Responsive tabs for weekly calendanar widget */
+/* 
+	Responsive Tabs Basic Style
+	https://github.com/jellekralt/Responsive-Tabs
+*/
+.r-tabs .r-tabs-nav {
+	margin: 0;
+	padding: 0;
+}
+.r-tabs .r-tabs-tab {
+	display: inline-block;
+	margin: 0;
+	list-style: none;
+}
+.r-tabs .r-tabs-panel {
+	padding: 15px;
+	display: none;
+}
+.r-tabs .r-tabs-panel.r-tabs-state-active {
+	display: block;
+}
+/* These are what makes it responsive */
+.r-tabs .r-tabs-accordion-title,
+.r-tabs.accordion .r-tabs-accordion-title {
+	display: none;
+}
+.r-tabs.accordion .r-tabs-nav {
+		display: none;
+}
+.r-tabs.accordion .r-tabs-accordion-title { 
+		display: block;
+}
+
+/* Weekly calendar widget style */
+#ctc-cal-week ul {
+	/* Date tabs' parent container */
+	margin-bottom: 20px;
+}
+#ctc-cal-week li {
+	/* Date tab title */
+	background: #fff;
+	list-style-type: none;
+	font-size: 36px;
+	line-height: 24px;
+	padding-top: 20px;
+	padding-bottom: 10px;
+	text-align: center;
+	float: left;
+	width: 14.285%;  /* 100%/7 */
+	border-bottom: 1px solid #B2B4B1;
+	border-top: 1px solid #B2B4B1;
+}
+#ctc-cal-week div[class*="accordion-title"]{
+	/* Date 'tab' title in accordion */
+	background: #fff;
+	font-size: 16px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+	border-bottom: 1px solid #B2B4B1;
+}
+#ctc-cal-week li[class*="active"], 
+#ctc-cal-week div[class*="accordion-title"][class*="active"] {
+	/* Active tab */
+	background: #7F3E19;
+	font-weight: bold;
+}
+#ctc-cal-week li[class*="active"] a, 
+#ctc-cal-week div[class*="accordion-title"][class*="active"] a {
+	/* Active tab title text; */
+	color: #FFF;
+}
+#ctc-cal-week li a, 
+#ctc-cal-week li a:hover, 
+#ctc-cal-week div[class*="accordion-title"] a ,
+#ctc-cal-week div[class*="accordion-title"] a:hover {
+	/* Anchor format */
+	text-decoration: none !important;
+}
+#ctc-cal-week li span {
+	/* Weekday text; tabbed */
+	font-size: 11px;
+	display: block;
+	text-transform: uppercase;
+}
+#ctc-cal-week div[class*="accordion-title"] span {
+	/* Weekday text: accordion */
+	text-transform: uppercase;
+	padding-left: 10px;
+}
+#ctc-cal-week div[class*="panel"] {
+	/* Tab content panel */
+	border-bottom: 1px solid #ccc;
+	background: #f6f6f6;
+}
+a.ctc-cal-week-title-link  i {
+		width: 48px;
+		text-align: center;
+		//color: #fff;
 }
