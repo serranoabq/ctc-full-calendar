@@ -2,7 +2,7 @@
 Contributors: serranoabq
 Tags: church, churches, events, calendar
 Requires at least: 3.6
-Tested up to: 3.9.1
+Tested up to: 4.7.5
 Stable tag: trunk
 License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -24,11 +24,11 @@ Use the shortcode [ctc-fullcalendar] in your posts or pages.
 
 = How do I change the calendar view? =
 
-Use the shortcode option 'view', as in [ctc-fullcalendar view='month']. Available views are 'responsive', 'month','week','basicWeek','basicDay','agendaWeek', or 'agendaDay'. If the view is 'responsive' or not specified, the calendar view is adjusted depending on the width of the container. The responsive view uses a basicDay view at small viewports, a basicWeek view at intermediate viewports, and a month display for larger ones. 
+Use the shortcode option 'view', as in [ctc-fullcalendar view='month']. Available views are 'month','week','basicWeek','basicDay','agendaWeek', 'agendaDay', 'listDay', 'listWeek', 'listMonth', and 'listYear'. If the view is not specified, the calendar view is adjusted depending on the width of the container. The responsive view uses a basicDay view at small viewports, a basicWeek view at intermediate viewports, and a month display for larger ones. List style views (listDay, listWeek, listMonth, listYear) are not responsive. 
 
 = How do adjust the breakpoints for responsive views? =
 
-Use the shortcode option 'breaks', as in [ctc-fullcalendar breaks='450,300']. The breaks are specified as a comma-separated list of numbers with the widths at which the view changes must be made. The first value specifies the change from large/month view to basicWeek view; the second one gives the width for changing from basicWeek to basicDay. The default breakpoints are 450 and 300. 
+Use the shortcode option 'breaks', as in [ctc-fullcalendar breaks='450,300']. The breaks are specified as a comma-separated list of numbers with the widths at which the view changes must be made. The first value specifies the change from large/month view to basicWeek view; the second one gives the width for changing from basicWeek to basicDay. The default breakpoints are 768 (tablet) and 568. 
 
 = Can I change the number of events loaded into the calendar? =
 
@@ -62,3 +62,4 @@ Yes, the calendar display works even without a CTC-compatible theme. However, wi
 0.9 - Added filter to ctc_move_date_forward and add daily recurrence scheduling. Added to GitHub
 0.9.1 - Removed filter for ctc_move_date_forward since it's insufficient for daily and every-n recurrence in CTC.
 0.9.2 - Made calendar code compatible with PHP 5.2 (previous version required PHP 5.3)
+1.2.1 - Updated to v3.4.0 of fullcalendar.js and fixed various bugs
